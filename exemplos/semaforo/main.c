@@ -8,8 +8,8 @@
 #define LD2_Yellow      BIT4
 #define LD2_Red         BIT5
 
-#define LDP1_Green      BIT6
-#define LDP1_Red        BIT7
+#define LDP1_Green      BIT7
+#define LDP1_Red        BIT6
 
 #define LDP2_Green      BIT6
 #define LDP2_Red        BIT7
@@ -27,6 +27,8 @@ void main(void)
 
 	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
 
+	__enable_interrupt();
+
 	// Iniciar as portas do MSP430
 	start_p1_p2();
 
@@ -34,8 +36,8 @@ void main(void)
 	do {
 	    switch(traffic_light_state){
 	    case 0:
-	        P2OUT = LD1_Green + LD2_Red + LDP1_Red;
-	        P1OUT = LDP2_Green;
+	        P2OUT = LD1_Green + LD2_Red + LDP2_Red;
+	        P1OUT = LDP1_Green;
 
 	        if(t >= switch1_green_time) {
 	            t = 0;
@@ -45,10 +47,8 @@ void main(void)
 
 	        break;
 	    case 1:
-	        P2OUT &= ~(LD1_Green);
-	        P2OUT |= LD1_Yellow;
-	        P1OUT &= ~(LD2_Green);
-	        P1OUT |= LD2_Red;
+	        P2OUT = LD1_Yellow + LD2_Red + LDP2_Red;
+	        P1OUT = LDP1_Red;
 
 	        if(t >= 2){
 	            t = 0;
@@ -57,8 +57,8 @@ void main(void)
 
 	        break;
 	    case 2:
-	        P2OUT &= ~(LD1_Yellow + LD2_Red + LDP1_Red);
-	        P2OUT |= LD2_Green + LD1_Red + LDP1_Green;
+	        P2OUT = LD1_Red + LD2_Green + LDP2_Green;
+	        P1OUT = LDP1_Red;
 
 	        if(t >= switch2_green_time){
 	            t = 0;
@@ -68,8 +68,8 @@ void main(void)
 
 	        break;
 	    case 3:
-	        P2OUT &= ~(LD2_Green + LDP1_Green);
-	        P2OUT |= LD2_Yellow + LDP1_Red;
+	        P2OUT = LD1_Red + LD2_Yellow + LDP2_Red;
+	        P1OUT = LDP1_Red;
 
 	        if(t >= 2){
 	            t = 0;
@@ -100,7 +100,7 @@ __interrupt void Port1_RTI(void) {
     case BIT2:
         P1IFG &= ~BIT2;
 
-        if(traffic_light_state == 0){
+        if(traffic_light_state == 2){
             switch2_green_time = 2;
         }
 
@@ -114,7 +114,7 @@ __interrupt void Port1_RTI(void) {
 void start_p1_p2(void){
     /* Inicialização da porta 1
        P1.0 - N.C           - Saída em nível baixo
-       P1.1 - '           - Entrada como resistor pull-up
+       P1.1 - SW1           - Entrada como resistor pull-up
        P1.2 - SW2           - Entrada como resistor pull-up
        P1.3 - N.C           - Saída em nível baixo
        P1.4 - N.C           - Saída em nível baixo
@@ -147,3 +147,4 @@ void start_p1_p2(void){
     P2DIR = 0xFF;
     P2OUT = 0x00;
 }
+
