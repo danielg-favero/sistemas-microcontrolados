@@ -137,3 +137,63 @@ void start_micro(){
     __enable_interrupt();
 }
 ```
+
+## Temporizador
+A cada borda de subida do nosso clock com período $t_{clock}$, um contador é incrementado, a partir disso podemos provocar uma **interrupção** a cada $N$ ciclos do nosso clock. Em resumo, podemos obter o valor de temporização através de:
+
+$$T_{int} = \sum_{n=0}^{n=N} t_{clock}$$
+
+![Clicos do clock e incremento do contador](assets/counter-clock.png)
+
+### Timer A
+- Temporizador de 16bits
+- 4 Modos de operação
+    - Contador (usado apenas para contar)
+    - Captura (medir o intervalo de tempo entre dois eventos)
+    - Comparação
+    - PWM
+- Ele possui 3 registradores de captura/comparação
+
+### Modo Contador
+O modo contador do timer A pode assumir 3 modos de contage:
+- **UP:** Incremento;
+- **UP / DOWN:** Incremento e Decremento;
+- **Contínuo**
+
+![Legenda dos modulos do contador](assets/modules_legend.png)
+
+> O módulo 0 (tanto no modo UP quanto UP/DOWN) poode resetar o contador ou inverter o sentido de contagem
+
+> O módulo 0 ativa uma flag de interrupção TAxCCIFG0 (possui uma RTI de interrupção própria, enquanto o módulo 1 e 2 compartilham uma RTI)
+
+#### Modo de contagem UP
+O contador vai incrementar até o valor de comparação do registrador do **módulo 0** (*TACCR0*)
+
+![Modo de contagem UP](assets/up_mode.png)
+> A medida que o valor do registrador TACCR0 aumenta, $t_1$ também irá aumentar
+
+
+#### Modo de contagem UP / DOWN
+O contador vai incrementar até o valor de comparação do registrador do **módulo 0**, após isso ele começa a decrementar até atingir o valor de 0
+
+![Modo de contagem UP / DOWN](assets/up_down_mode.png)
+
+
+#### Modo de contagem contínuo
+O contador vai incrementar até o valor máximo do registrador do **módulo 0** (*2^16 = 65.536*)
+
+![Modo de contagem contínuo](assets/continuous_mode.png)
+
+### Modo Comparação
+O contador começa a contar a partir de 0, quando chegar a $N$ ciclos de clock, um comparador da um reset no contador e ativa uma flag de interrupção na CPU
+> Lembrando que são N+1 contagens, pois é necessário mais um ciclo de clock para o contador retornar a 0
+
+![Diagrama de blocos do comparador](assets/comparator.png)
+
+#### Cálculo do tempo para interrupção
+
+$$Valor_{registrador} = N = tempo \times frequencia_{clock} - 1$$
+
+Em resumo...
+
+![Resumo do modo comparação nos módulos 0, 1 e 2](assets/comparison_mode_counter.png)
