@@ -197,3 +197,76 @@ $$Valor_{registrador} = N = tempo \times frequencia_{clock} - 1$$
 Em resumo...
 
 ![Resumo do modo comparação nos módulos 0, 1 e 2](assets/comparison_mode_counter.png)
+
+## Efeito Bounce
+
+Ocorre quando, no precionamento de chaves mecânicas, há um mal contato que acarreta em um trepidação do sinal.
+
+![Efeito Bounce](assets/bounce-effect.png)
+
+### Debounce
+
+Técnica para evitar o efeito de bounce
+
+## PWM
+
+Sinal cuja a razão cíclica é variada, utilizado em:
+- Controle de velocidade de motores DC;
+- Conversores DC - DC
+- Geração de sinais (ondas quadradas, senoides, etc.)
+
+### Gerando sinal PWM
+
+É possível gerar até 2 sinais PWM por timer
+
+![Módulos de geração de sinal PWM](assets/pwm_modes.png)
+
+> Módulo 1 e 2: Gerar o sinal PWM
+
+> Módulo 0: Define a frequência do sinal PWM
+
+### Modos de saída do sinal PWM
+
+#### Modo de saída 1 (Set)
+
+A saída do sinal é setada quando TAR = TACCR1
+
+![Modo de saída pwm 1](assets/OUTMOD1.png)
+
+#### Modo de saída 2 (Toggle/Reset)
+
+A saída do sinal é invertida toda vez que TAR = TACCR1 e resetado quando TAR = TACCR0
+
+![Modo de saída pwm 2](assets/OUTMOD2.png)
+
+#### Modo de saída 3 (Set/Reset)
+
+Semelhante ao modo de saída 2, a saída do sinal é setada toda vez que TAR = TACCR1 e resetado quando TAR = TACCR0
+
+![Modo de saída pwm 3](assets/OUTMOD3.png)
+
+#### Modo de saída 4 (Toggle)
+
+A saída do sinal é invertida toda vez que TAR = TACCR1
+
+![Modo de saída pwm 4](assets/OUTMOD4.png)
+
+#### Modo de saída 5 (Reset)
+
+A saída do sinal é resetada quando TAR = TACCR1
+
+![Modo de saída pwm 5](assets/OUTMOD5.png)
+
+#### Modo de saída 6 (Toggle/Set)
+
+A saída do sinal é invertida toda vez que TAR = TACCR1 e setada quando TAR = TACCR0
+
+![Modo de saída pwm 6](assets/OUTMOD6.png)
+
+#### Modo de saída 7 (Reset/Set)
+
+A saída do sinal é resetada toda vez que TAR = TACCR1 e setada quando TAR = TACCR0
+
+![Modo de saída pwm 7](assets/OUTMOD7.png)
+
+> NÃO É PRECISO HABILITAR INTERRUPÇÃO PARA GERAR SINAL PWM
