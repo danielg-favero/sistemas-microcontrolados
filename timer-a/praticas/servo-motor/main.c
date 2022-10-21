@@ -23,33 +23,33 @@ int main(void) {
     start_TA0_PWM();
     start_TA1_Debouncer();
 
-	do {
-	    
-	} while(1);
+    do {
+
+    } while(1);
 }
 
 void start_msp430(void) {
-	WDTCTL = WDTPW | WDTHOLD;
+    WDTCTL = WDTPW | WDTHOLD;
 
-	/*
-	   OSCILADORES:
+    /*
+       OSCILADORES:
        VLO:                 Não utilizado
        LXFT1CLK:            32.768 Hz
        DCOCLK:              ~ 16 MHz (via dados de calibrado do fab.)
 
-	   SAÍDAS DE CLOCK:
-	   ACLK = LFXT1CLK:     32.768 Hz
-	   MCLK = DCOCLK:       ~ 16 MHz
-	   SMCLK = DCOCLK/8:    ~ 2 MHz
-	*/
-	DCOCTL = CALDCO_16MHZ;
-	BCSCTL1 = CALBC1_16MHZ;
-	BCSCTL2 = DIVS0 + DIVS1;
-	BCSCTL3 = XCAP0 + XCAP1;
+       SAÍDAS DE CLOCK:
+       ACLK = LFXT1CLK:     32.768 Hz
+       MCLK = DCOCLK:       ~ 16 MHz
+       SMCLK = DCOCLK/8:    ~ 2 MHz
+    */
+    DCOCTL = CALDCO_16MHZ;
+    BCSCTL1 = CALBC1_16MHZ;
+    BCSCTL2 = DIVS0 + DIVS1;
+    BCSCTL3 = XCAP0 + XCAP1;
 
-	while(BCSCTL3 & LFXT1OF);
+    while(BCSCTL3 & LFXT1OF);
 
-	__enable_interrupt();
+    __enable_interrupt();
 }
 
 void start_p1_p2(void) {
@@ -133,7 +133,7 @@ void start_TA1_Debouncer(void) {
 #pragma vector=PORT2_VECTOR
 __interrupt void PORT2_RTI(void){
     P2IE &= ~BIT0;
-    TA1CCR0 = 19999;
+    TA1CCR0 = 1200;
 }
 
 // Debouncer
